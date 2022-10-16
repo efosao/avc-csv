@@ -1,1 +1,9 @@
+# pkg and build artifacts
 node_modules
+.cache
+build
+
+# dev artifacts
+.vscode
+.env
+.env.local
