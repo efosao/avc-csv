@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Import {
+  id         String       @id @default(cuid())
+  device_id  String
+  filename   String
+  created    DateTime     @default(now())
+  updated    DateTime     @updatedAt
+  ImportData ImportData[]
+
+  @@map("import")
+}
+
+model ImportData {
+  id        String   @id @default(cuid())
+  import_id String
+  import    Import   @relation(fields: [import_id], references: [id])
+  data      Json
+  created   DateTime @default(now())
+  updated   DateTime @updatedAt
+
+  @@map("import_data")
+}
