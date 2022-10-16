@@ -8,6 +8,12 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import tailwindStylesheetUrl from "~/styles/app.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+};
+
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "All Voices",
