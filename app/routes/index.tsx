@@ -32,7 +32,7 @@ export default function Index() {
   const canUpload = filesToUpload.length > 0;
 
   return (
-    <div className="mx-auto mt-16 max-w-7xl text-center">
+    <div className="mx-auto mt-4 max-w-7xl text-center">
       <h1 className="font-bold text-xl text-red-400">
         All Voices CSV Uploader Code Test
       </h1>
@@ -65,7 +65,7 @@ export default function Index() {
         </div>
       </Form>
 
-      <p className="mt-40">Device ID: {deviceId}</p>
+      <p className="mt-20">Device ID: {deviceId}</p>
     </div>
   );
 }
