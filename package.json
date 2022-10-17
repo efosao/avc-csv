@@ -16,15 +16,18 @@
     "@remix-run/react": "latest",
     "@remix-run/serve": "latest",
     "isbot": "^3.6.1",
+    "n-readlines": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-dropzone": "^14.2.3"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@remix-run/dev": "latest",
     "@remix-run/eslint-config": "latest",
+    "@types/n-readlines": "^1.0.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@types/uuid": "^8.3.4",
     "autoprefixer": "^10.4.12",
     "concurrently": "^7.4.0",
     "eslint": "^8.23.1",
