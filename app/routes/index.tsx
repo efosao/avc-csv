@@ -1,5 +1,36 @@
+import {
+  ActionFunction,
+  json,
+  unstable_composeUploadHandlers,
+  unstable_createFileUploadHandler,
+  unstable_createMemoryUploadHandler,
+  unstable_parseMultipartFormData,
+} from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
+
+export const action: ActionFunction = async ({ request }) => {
+  const uploadHandler = unstable_composeUploadHandlers(
+    unstable_createFileUploadHandler({
+      maxPartSize: 500_000_000,
+      file: ({ filename }) => filename,
+    }),
+    unstable_createMemoryUploadHandler()
+  );
+
+  const formData = await unstable_parseMultipartFormData(
+    request,
+    uploadHandler
+  );
+
+  const files = formData.getAll("files") as File[];
+
+  for (const file of files) {
+    console.log(file.name); // csv upload handler here
+  }
+
+  return json({ message: "Hello, world!" });
+};
 
 export default function Index() {
   const [deviceId, setDeviceId] = useState<string | null>(null);
