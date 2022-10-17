@@ -15,6 +15,7 @@ model Import {
   id         String       @id @default(cuid())
   device_id  String
   filename   String
+  session_id String
   created    DateTime     @default(now())
   updated    DateTime     @updatedAt
   ImportData ImportData[]
@@ -23,12 +24,14 @@ model Import {
 }
 
 model ImportData {
-  id        String   @id @default(cuid())
-  import_id String
-  import    Import   @relation(fields: [import_id], references: [id])
-  data      Json
-  created   DateTime @default(now())
-  updated   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  import_id  String
+  import     Import   @relation(fields: [import_id], references: [id], onDelete: Cascade)
+  first_name String
+  last_name  String
+  record_id  Int
+  created    DateTime @default(now())
+  updated    DateTime @updatedAt
 
   @@map("import_data")
 }
