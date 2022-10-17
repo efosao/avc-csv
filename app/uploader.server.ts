@@ -1,9 +1,11 @@
+import fs from "fs";
 import lineByLine from "n-readlines";
+
 import { appendDataToImportRecord, createImportRecord } from "./models/import";
 
 class DbWriter {
+  _MAX_BUFFER_SIZE = 10;
   _buffer: string[] = [];
-  _MAX_BUFFER_SIZE = 4;
   _recordId?: string;
 
   constructor(recordId: string) {
@@ -20,7 +22,7 @@ class DbWriter {
     this._buffer.length = 0;
   }
 
-  async clearBuffer() {
+  async writeFinalBuffer() {
     if (this._buffer.length > 0) {
       await this.writeBufferToDb(this._buffer);
     }
@@ -62,7 +64,7 @@ export async function insertCsvIntoDb(
     let count = 0;
     let line: Buffer | false;
 
-    console.log("starting to read file");
+    console.log("starting to read file...");
     while ((line = liner.next())) {
       count++;
       const lineString = line.toString("utf-8");
@@ -74,9 +76,16 @@ export async function insertCsvIntoDb(
       }
     }
 
-    console.log("done reading file");
+    fs.unlink(filepath, (err) => {
+      if (err) {
+        console.log("error deleting file", err);
+      }
+      console.log("upload file deleted");
+    });
 
-    await dbWriter.clearBuffer();
+    await dbWriter.writeFinalBuffer();
+
+    console.log("done reading file");
     resolve();
   });
 }
