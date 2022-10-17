@@ -7,21 +7,10 @@ import {
   unstable_parseMultipartFormData,
 } from "@remix-run/node";
 import { Form } from "@remix-run/react";
-import fs from "fs";
 import { useEffect, useState } from "react";
-import readline from "readline";
+import { v4 as uuidv4 } from "uuid";
 
-async function readCsvFile(filepath: string) {
-  const stream = fs.createReadStream(filepath);
-  const r1 = readline.createInterface({
-    input: stream,
-    crlfDelay: Infinity,
-  });
-
-  for await (const line of r1) {
-    console.log(`${line}`);
-  }
-}
+import { insertCsvIntoDb } from "~/uploader.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const uploadHandler = unstable_composeUploadHandlers(
@@ -37,12 +26,15 @@ export const action: ActionFunction = async ({ request }) => {
     uploadHandler
   );
 
-  const files = formData.getAll("files") as any[];
+  type FileWithFilepath = File & { filepath: string };
+
+  const files = formData.getAll("files") as FileWithFilepath[];
   const deviceId = formData.get("deviceId") as string;
+  const sessionId = uuidv4();
 
   for (const file of files) {
-    const filepath: string = file.filepath as string;
-    await readCsvFile(filepath);
+    const filepath: string = file.filepath;
+    await insertCsvIntoDb(filepath, file.name, deviceId, sessionId);
     // validate file
     // save file to db
   }
