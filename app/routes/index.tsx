@@ -1,8 +1,6 @@
 import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
-import Uploader from "~/components/Uploader";
-
 export default function Index() {
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -16,20 +14,13 @@ export default function Index() {
     setDeviceId(newDeviceId);
   }, []);
 
-  function onDrop(acceptedFiles: File[]) {
-    console.log(acceptedFiles);
-    setFiles(acceptedFiles);
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    setFiles(files ? Array.from(files) : []);
+    console.log({ files });
   }
 
-  function resetFiles() {
-    setFiles([]);
-  }
-
-  const filesToUpload = files.map((file) => (
-    <div key={file.name}>{file.name}</div>
-  ));
-
-  const canUpload = filesToUpload.length > 0;
+  const canUpload = files.length > 0;
 
   return (
     <div className="mx-auto mt-4 max-w-7xl text-center">
@@ -37,21 +28,30 @@ export default function Index() {
         All Voices CSV Uploader Code Test
       </h1>
 
-      {canUpload && (
-        <div className="mt-4">
-          <h2 className="font-bold text-lg text-red-400">Files to upload</h2>
-          <div className="mt-2">{filesToUpload}</div>
-        </div>
-      )}
-
-      <Form>
-        {!canUpload && <Uploader onDrop={onDrop} />}
+      <Form method="post" encType="multipart/form-data">
+        <label
+          className="block mb-2 text-sm font-medium text-gray-400"
+          htmlFor="file_input"
+        >
+          Upload file
+        </label>
+        <input
+          className="block w-full text-sm p-2 mx-2 text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer"
+          aria-describedby="file_input_help"
+          accept="text/csv,text/plain"
+          type="file"
+          name="files"
+          multiple
+          onChange={onFileChange}
+        />
+        <p className="mt-1 text-sm text-gray-400" id="file_input_help">
+          CSV or TXT files only
+        </p>
 
         <div className="flex justify-center gap-2 mt-4">
           <button
             className="py-2 px-4 bg-red-200 rounded disabled:bg-gray-300"
-            type="button"
-            onClick={resetFiles}
+            type="reset"
           >
             Reset
           </button>
