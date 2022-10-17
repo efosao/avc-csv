@@ -7,7 +7,7 @@ import {
   unstable_createMemoryUploadHandler,
   unstable_parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, Link, useActionData } from "@remix-run/react";
 import { createRef, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -57,7 +57,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 type ImportType = {
-  created: Date;
+  created: string;
   device_id: string;
   filename: string;
   id: string;
@@ -105,6 +105,8 @@ export default function Index() {
   }
 
   const canUpload = files.length > 0;
+
+  const rtf1 = new Intl.RelativeTimeFormat("en", { style: "narrow" });
 
   return (
     <div className="mx-auto mt-4 max-w-7xl text-center">
@@ -155,11 +157,14 @@ export default function Index() {
       <section className="mt-8">
         <h2 className="font-bold text-xl text-red-400">Imports</h2>
         {imports.length > 0 ? (
-          <ul className="mt-4">
+          <ul className="mt-4 mx-auto w-[500px] flex flex-col items-start">
             {imports.map((importItem) => (
               <li key={importItem.id}>
-                <p className="text-sm text-gray-400">
-                  {importItem.filename} - {importItem.created.toString()}
+                <p className="text-md font-semibold px-2 py-1 text-gray-700 hover:bg-blue-200 rounded">
+                  <Link className="" to={`/import/${importItem.id}`}>
+                    {importItem.filename} -{" "}
+                    {new Date(importItem.created).toLocaleString()}
+                  </Link>
                 </p>
               </li>
             ))}
