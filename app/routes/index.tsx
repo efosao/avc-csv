@@ -24,16 +24,17 @@ export const action: ActionFunction = async ({ request }) => {
   );
 
   const files = formData.getAll("files") as File[];
+  const deviceId = formData.get("deviceId") as string;
 
   for (const file of files) {
-    console.log(file.name); // csv upload handler here
+    console.log(file.name, deviceId); // csv upload handler here
   }
 
   return json({ message: "Hello, world!" });
 };
 
 export default function Index() {
-  const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [deviceId, setDeviceId] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
@@ -48,7 +49,6 @@ export default function Index() {
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     setFiles(files ? Array.from(files) : []);
-    console.log({ files });
   }
 
   const canUpload = files.length > 0;
@@ -60,26 +60,29 @@ export default function Index() {
       </h1>
 
       <Form method="post" encType="multipart/form-data">
-        <label
-          className="block mb-2 text-sm font-medium text-gray-400"
-          htmlFor="file_input"
-        >
-          Upload file
-        </label>
-        <input
-          className="block w-full text-sm p-2 mx-2 text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer"
-          aria-describedby="file_input_help"
-          accept="text/csv,text/plain"
-          type="file"
-          name="files"
-          multiple
-          onChange={onFileChange}
-        />
-        <p className="mt-1 text-sm text-gray-400" id="file_input_help">
-          CSV or TXT files only
-        </p>
+        <section className="my-4">
+          <label
+            className="block mb-2 text-sm font-medium text-gray-400"
+            htmlFor="file_input"
+          >
+            Upload file
+          </label>
+          <input
+            className="block w-8/12 text-sm p-2 mx-auto text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer"
+            aria-describedby="file_input_help"
+            accept="text/csv,text/plain"
+            type="file"
+            name="files"
+            multiple
+            onChange={onFileChange}
+          />
+          <p className="mt-1 text-sm text-gray-400" id="file_input_help">
+            CSV or TXT files only
+          </p>
+        </section>
+        <input name="deviceId" type="hidden" value={deviceId} />
 
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="flex justify-center gap-2 mt-6">
           <button
             className="py-2 px-4 bg-red-200 rounded disabled:bg-gray-300"
             type="reset"
