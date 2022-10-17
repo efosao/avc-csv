@@ -7,7 +7,21 @@ import {
   unstable_parseMultipartFormData,
 } from "@remix-run/node";
 import { Form } from "@remix-run/react";
+import fs from "fs";
 import { useEffect, useState } from "react";
+import readline from "readline";
+
+async function readCsvFile(filepath: string) {
+  const stream = fs.createReadStream(filepath);
+  const r1 = readline.createInterface({
+    input: stream,
+    crlfDelay: Infinity,
+  });
+
+  for await (const line of r1) {
+    console.log(`${line}`);
+  }
+}
 
 export const action: ActionFunction = async ({ request }) => {
   const uploadHandler = unstable_composeUploadHandlers(
@@ -23,11 +37,14 @@ export const action: ActionFunction = async ({ request }) => {
     uploadHandler
   );
 
-  const files = formData.getAll("files") as File[];
+  const files = formData.getAll("files") as any[];
   const deviceId = formData.get("deviceId") as string;
 
   for (const file of files) {
-    console.log(file.name, deviceId); // csv upload handler here
+    const filepath: string = file.filepath as string;
+    await readCsvFile(filepath);
+    // validate file
+    // save file to db
   }
 
   return json({ message: "Hello, world!" });
