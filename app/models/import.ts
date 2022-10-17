@@ -1,4 +1,19 @@
+import { Import } from "@prisma/client";
+
 import { prisma } from "~/db.server";
+
+export async function getImportsByDeviceId(
+  deviceId: string
+): Promise<Import[]> {
+  return prisma.import.findMany({
+    where: {
+      device_id: deviceId,
+    },
+    orderBy: {
+      created: "desc",
+    },
+  });
+}
 
 export async function createImportRecord(
   deviceId: string,
